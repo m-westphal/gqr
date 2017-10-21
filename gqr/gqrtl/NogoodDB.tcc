@@ -120,10 +120,10 @@ std::vector<Tuple> NogoodDB<R>::checkNogoods(const Tuple v, const size_t d, Core
 	*(processed_labels.insert(getPos(v,d)).first) = true;
 	undo_processed.push_back(getPos(v,d));
 
-	std::list<nogoodNode*>& list = watched_atoms[getPos(v, d)];
-	for (typename std::list<nogoodNode*>::iterator it = list.begin(); it != list.end();) {
-		typename std::list<nogoodNode*>::iterator current = it;
-		it++;
+	std::list<nogoodNode*> list = watched_atoms[getPos(v, d)];
+	for (typename std::list<nogoodNode*>::iterator it_wa = list.begin(); it_wa != list.end();) {
+		typename std::list<nogoodNode*>::iterator current = it_wa;
+		it_wa++;
 
 		// identify watched atom and "the other" watched atom
 		watchedAtom* wa = &((*current)->wa.first);
@@ -227,6 +227,7 @@ std::vector<Tuple> NogoodDB<R>::checkNogoods(const Tuple v, const size_t d, Core
 			csp.setValue(vp, csp.getValue(vp) & Dp_excluded);
 			queue.insert(vp.x*csp.getSize()+vp.y, csp.getCalculus().getWeight(csp.getValue(vp)));
 			if (csp.getValue(vp).none()) {
+				std::swap(watched_atoms[getPos(v, d)],list); // update watched literals on v,d
 				std::vector<Tuple> failed_constraint;
 				for (size_t l = 0; l < ng.size(); l++)
 					failed_constraint.push_back(ng[l].first);
@@ -235,6 +236,7 @@ std::vector<Tuple> NogoodDB<R>::checkNogoods(const Tuple v, const size_t d, Core
 		}
 	}
 
+	std::swap(watched_atoms[getPos(v, d)],list); // update watched literals on v,d
 	return std::vector<Tuple>();
 }
 
