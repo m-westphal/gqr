@@ -53,6 +53,7 @@ std::string SubcommandPathConsistency::helpString = std::string(
 SubcommandPathConsistency::SubcommandPathConsistency(const std::vector<std::string>& a) : SubcommandAbstract(a),
 unusedArgs(commandLine),
 negativeOnly(false), positiveOnly(false),
+showSolution(false),
 returnState(false),
 //swPrintConvTable(false), swPrintCompTable(false), swPrintBaseRelations(false),
 calculus(NULL) {
@@ -161,14 +162,13 @@ int SubcommandPathConsistency::runCoreTemplate<R>::execute(const std::string& na
 
 		path_consistent = (propagation.enforce(csp).empty());
 
-		std::cout << csp.name;
 		if (!path_consistent) {
 			if (!positiveOnly)
-				std::cout << ": 0\n";
+				std::cout << csp.name << ": 0\n";
 		}
 		else {
 			if (!negativeOnly) {
-				std::cout << ": 1\n";
+				std::cout << csp.name << ": 1\n";
 				if (showSolution) {
 					std::cout << csp.getSize()-1 << " " << csp.name << std::endl;
 					for (size_t i = 0; i < csp.getSize(); ++i)
