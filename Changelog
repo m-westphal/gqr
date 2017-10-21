@@ -1,0 +1,55 @@
+Changes since release 1418:
+- Major code refactoring
+- Search with nogoods and restarts
+- Speed and scalability improvements
+
+Changes since release 1417:
+- Ability to compile GQR into a C library (based on the GObject framework)
+- Minor bugfixes for gcc-4.5, data search path, memory leaks, unit tests and waf
+
+Changes since release 1298:
+- Automatically compute the splitting of relations into tractable relations on startup, instead of relying on precomputed files
+- Enforce total order on relations within WeightValueOrder
+- Replace std::priority_queue with heap-based queue that supports decrease-key operations in weighted algebraic closure
+- Remove std::tr1 dependency; GQR now ships with a HashSet class
+- Minor bugfixes for input file handling
+
+Changes since release 1200:
+- Multiple relation data types precompiled in binary
+- Use trailing-like history to reduce memory consumption within search
+- Enable weighted a-closure by default
+- Bugfix for heuristic in weighted a-closure
+- Remove multiple heuristic edge queue type
+- Make non-precomputed composition use the size-trick; as found in the cache precomputation
+- Update the SWIG functionality
+
+Changes since release 1137:
+- reduce memory consumption within the path consistency algorithm
+- new precomputation architecture for calculi operations (improves constraint propagation speed)
+
+Changes since release 1089:
+- GCC 4.4.1 compile fix
+- minor search space reduction in 2-way branching DFS with dynamic edge selection
+
+Changes since release 729:
+- switched to subcommand commandline structure (subversion style)
+- support for combinations of binary constraint calculi
+- correctly handle calculi whose base relations are non-serial
+- speedup for weighted path consistency scheme
+- more edge ordering heuristics
+- dynamic edge ordering heuristics
+- new default heuristic (dynamic) "weight over learned weights" (a variant of "domain over weighted degree")
+- value ordering according to weight of relations
+- support for eligible edges (Condotta et al.)
+- support for MINCSP calculation
+
+Changes since version 20102006:
+- now uses waf (http://code.google.com/p/waf/) as build system
+- added support for x86-64 CPUs (should also work on other 64 bit systems)
+- new class RelationFixedBitset to represent relations as binary vectors
+- added the cardinal directions calculus (cd)
+- introduced some variable ordering heuristics to the backtracking search
+- removed GUI code and Python bindings (will come back in the future)
+- fixed composition table of the occlusion calculus
+- fixed the cover files of the RCC-8 subclasses
+- lots of bugfixes

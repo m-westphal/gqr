@@ -1,0 +1,5 @@
+2 # 3 nodes, all identical
+ 0  1 ( S_0 )
+ 0  2 ( S_0 )
+ 1  2 ( S_0 )
+.

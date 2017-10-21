@@ -1,0 +1,30 @@
+#Combine RCC8 and Point Algebra
+combine rcc8 point
+
+#refinement rules aka interdependencies
+refine 0 1
+  TPP :: ( < )
+  NTPP :: ( < )
+  TPPI :: ( > )
+  NTPPI :: ( > )
+  #implicitly defined:
+  #DC :: ( < > = )
+  #EC :: ( < > = )
+  #PO :: ( < > = )
+  EQ :: ( = )
+.
+
+refine 1 0
+  = :: (DC EC PO EQ)
+  > :: (DC EC PO TPPI NTPPI)
+  < :: (DC EC PO TPP NTPP)
+.
+#end base relation refinements
+.
+#
+#variables :: ()
+.
+#end composition refinements
+.
+
+calculus_size 14

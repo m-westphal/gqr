@@ -1,0 +1,142 @@
+#! /usr/bin/env python
+# encoding: utf-8
+# Stefan Woelfl, 2008, 2010
+# Matthias Westphal, 2009
+
+import os.path
+import os
+import Options
+from subprocess import Popen, PIPE
+
+def set_options(ctx):
+      ## options provided by the cxx module, see "waf -h"
+      ctx.tool_options('compiler_cxx')
+
+
+def configure(conf):
+      ## CXX=g++-3.0 ./waf configure will use g++-3.0 instead of 'g++'
+
+      conf.check_tool('compiler_cxx misc')
+
+      # conf.check_tool('gawk')
+      # conf.check_tool('doxygen')
+
+      conf.env['CXXFLAGS'] = [ ]
+
+      ## Instead the following line; see gqr.uselib   = 'GQR' below
+      conf.env['CXXFLAGS_GQR'] = ['-ansi', '-Wall', '-pedantic', '-O3', '-DNDEBUG']
+      conf.env['LINKFLAGS_GQR-STATIC'] = '-static'
+
+      conf.check_message_custom('GQR version', '', conf.env['GQR_VERSION'])
+
+      datadir = os.path.join(Options.options.prefix,Options.options.data_dir)
+
+      ## GQR uses a default (global) data directory, which can be overridden on
+      ## the command line. See gqr.h, gqr.cpp,
+      ## $BUILD/default/gqr/config.h
+      conf.define('GQR_DEFAULT_DATA_DIR',datadir)
+      conf.check_message_custom('default install data dir', '', datadir)
+
+      ## Define the relation type
+      if Options.options.relation_size:
+            conf.define('RELATION_SIZE', Options.options.relation_size)
+            conf.check_message_custom('user defined relation bits', '', Options.options.relation_size)
+
+      ## Define the branch
+      ## conf.define('GQR_BRANCH','mybranch')
+
+      if Options.options.build_library:
+	    conf.check_cfg(atleast_pkgconfig_version='0.0.0', mandatory = True)
+
+      if Options.options.build_library:
+            conf.check_message_custom('libgqr target', '', 'requested (--enable-libgqr)')
+            conf.check_cfg(
+	          package = 'gobject-2.0', atleast_version = '2.24.0',
+	          mandatory = 1,
+	          uselib_store = 'GOBJECT',
+	          args = '--cflags --libs'
+            )
+	    conf.define('ENABLE_LIBGQR',1)
+      else:
+           conf.check_message_custom('libgqr target', '', 'not requested (use --enable-libgqr)')
+
+      ## We write build configuration to config.h and tell the
+      ## compiler to use it.
+      conf.env['CXXDEFINES'] += ['HAVE_CONFIG_H'] 
+      conf.write_config_header('config.h')
+
+      conf.sub_config('tests')
+
+      # Setup debug variant
+      env = conf.env.copy()
+      env.set_variant('debug')
+      conf.set_env_name('debug', env)
+      conf.setenv('debug')
+      conf.env['CXXFLAGS_GQR'] = ['-ansi', '-Wall', '-pedantic', '-g', '-D_GLIBCXX_DEBUG' ]
+      conf.write_config_header('config.h')
+
+      # Setup profile variant
+      env = conf.env.copy()
+      env.set_variant('profile')
+      conf.set_env_name('profile', env)
+      conf.setenv('profile')
+      conf.env['CXXFLAGS_GQR'] = ['-ansi', '-Wall', '-pedantic', '-O3', '-DNDEBUG', '-pg' ]
+      conf.env['LINKFLAGS_GQR'] = '-pg'
+      conf.write_config_header('config.h')
+
+
+def build(bld):
+      # GQR
+      gqr = bld.new_task_gen('cxx', 'program')
+      gqr.source = '''
+      utils/Timer.cpp
+      utils/Logger.cpp
+      Stringtools.cpp
+      gqr.cpp
+      PriorityQueue.cpp
+      Calculus.cpp
+      CalculusReader.cpp
+      CombinedCalculusReader.cpp
+      CSPReader.cpp
+      FileSplitter.cpp
+      RestartsFramework.cpp
+      commands/SubcommandAbstract.cpp
+      commands/SubcommandHelp.cpp
+      commands/SubcommandVersion.cpp
+      commands/SubcommandCheck.cpp
+      commands/SubcommandPathConsistency.cpp
+      commands/SubcommandConsistency.cpp
+      '''
+#      commands/SubcommandMinCsp.cpp
+#      commands/SubcommandMultiConsistency.cpp
+#      commands/SubcommandMultiPathConsistency.cpp
+
+      gqr.includes = '. ..'
+      gqr.target   = 'gqr'
+      gqr.defines = 'GQR_VERSION=\"%s\"' % bld.env['GQR_VERSION']
+      gqr.uselib   = 'GQR' # set compiler flags
+
+      if Options.options.build_devel:
+            static_build = bld.new_task_gen('cxx', 'program', target='gqr-static', source = '', add_objects='gqr', uselib='GQR-STATIC')
+
+            debug = gqr.clone('debug')
+            debug.install_path = None
+            debug.name = 'debug'
+            profile = gqr.clone('profile')
+            profile.install_path = None
+            profile.name = 'profile'
+
+      if 'ENABLE_LIBGQR' in bld.get_env()['defines']:
+	    libgqr = bld.new_task_gen(features='cxx cshlib', source = 'utils/Timer.cpp utils/Logger.cpp PriorityQueue.cpp Calculus.cpp CalculusReader.cpp FileSplitter.cpp Stringtools.cpp gobject/gqrcalculus.cpp gobject/gqrcsp.cpp gobject/gqrsolver.cpp', target='gqr')
+	    libgqr.defines = 'GQR_VERSION=\"%s\"' % bld.env['GQR_VERSION']
+	    libgqr.uselib = 'GQR GOBJECT'
+	    libgqr.includes = '. ..'
+
+	    target_dir_prefix = os.path.join('${PREFIX}', os.path.join('include', 'gqr'))
+	    bld.install_files(target_dir_prefix, 'libgqr.h')
+	    target_dir_prefix = os.path.join(target_dir_prefix, 'gobject')
+	    for name in [ 'gqrcsp.h', 'gqrsolver.h', 'gqrcalculus.h']:
+		bld.install_files(target_dir_prefix, os.path.join('gobject', name))
+
+      if Options.commands["check"]:
+            bld.add_subdirs('tests')

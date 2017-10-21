@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://sfbtr8.informatik.uni-freiburg.de/public/qcc/BinaryCalculusXSLT.xml"?>
+
+<calculus 
+    xmlns="http://sfbtr8.informatik.uni-freiburg.de/public/qcc" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://sfbtr8.informatik.uni-freiburg.de/public/qcc BinaryCalculus.xsd">
+
+<information>
+  
+  <calculusinfo>
+    <name id="#RCC5">RCC-5</name>
+    
+    <documentation>
+      
+      <description> 
+	Short summary of the calculus
+      </description>
+      
+      <reference ref="http://.../info.pdf">
+	   a nice description
+	     </reference>
+	     <reference ref="http://.../info.pdf">
+	     corrected some errors
+	     </reference> 
+      
+    </documentation>
+    
+    <statistics>
+      <numberOfBaseRelations value="5"/>
+      <!-- numberOfTractableSubclasses value="1"/-->
+    </statistics>
+    
+  </calculusinfo>
+  
+  <authorinfo> 
+    <author id="sw">
+      <name>Stefan W.</name>
+	<email>stefan.woelfl@web.de</email>
+    </author>
+  </authorinfo>
+  
+  <revisioninfo>
+    
+    <revision version="1.0" date="2006-07-31">
+      <author ref="sw"/>
+      <description>
+	initial version 
+      </description>
+    </revision>
+    
+  </revisioninfo>
+  
+</information>
+
+<specification>
+  
+  <language>
+    <baseRelations>
+      <baserel id="#dc" name="DisConnected"/>     
+      <baserel id="#po" name="PartiallyOverlaps"/>
+      <baserel id="#pp" name="ProperPart"/>
+      <baserel id="#ppi" name="ProperPartInv"/>
+      <baserel id="#eq" name="EQqals"/>
+    </baseRelations>
+    
+    <identityRelation>
+      <baserel ref="#eq"/>
+    </identityRelation>
+  </language>
+  
+  <involution>
+    <mapsto>
+      <baserel ref="#dc"/>
+      <invbaserel ref="#dc"/>
+    </mapsto>
+    <mapsto>
+      <baserel ref="#po"/>
+      <invbaserel ref="#po"/>
+    </mapsto>
+    <mapsto>
+      <baserel ref="#pp"/>
+      <invbaserel ref="#ppi"/>
+    </mapsto>
+    <mapsto>
+      <baserel ref="#ppi"/>
+      <invbaserel ref="#pp"/>
+    </mapsto>
+    <mapsto>
+      <baserel ref="#eq"/>
+      <invbaserel ref="#eq"/>
+    </mapsto>
+  </involution>
+  
+  <composition>
+    <mapsto>
+      <baserel1 ref="#eq"/><baserel2 ref="#eq"/>
+      <cmpsrel><baserel ref="#eq"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#eq"/><baserel2 ref="#dc"/>
+      <cmpsrel><baserel ref="#dc"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#eq"/><baserel2 ref="#po"/>
+      <cmpsrel><baserel ref="#po"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#eq"/><baserel2 ref="#pp"/>
+      <cmpsrel><baserel ref="#pp"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#eq"/><baserel2 ref="#ppi"/>
+      <cmpsrel><baserel ref="#ppi"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#dc"/><baserel2 ref="#eq"/>
+      <cmpsrel><baserel ref="#dc"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#dc"/><baserel2 ref="#dc"/>
+      <cmpsrel><baserel ref="#eq"/><baserel ref="#dc"/><baserel ref="#po"/><baserel ref="#pp"/><baserel ref="#ppi"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#dc"/><baserel2 ref="#po"/>
+      <cmpsrel><baserel ref="#dc"/><baserel ref="#po"/><baserel ref="#pp"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#dc"/><baserel2 ref="#pp"/>
+      <cmpsrel><baserel ref="#dc"/><baserel ref="#po"/><baserel ref="#pp"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#dc"/><baserel2 ref="#ppi"/>
+      <cmpsrel><baserel ref="#dc"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#po"/><baserel2 ref="#eq"/><cmpsrel><baserel ref="#po"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#po"/><baserel2 ref="#dc"/>
+      <cmpsrel><baserel ref="#dc"/><baserel ref="#po"/><baserel ref="#ppi"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#po"/><baserel2 ref="#po"/>
+      <cmpsrel><baserel ref="#eq"/><baserel ref="#dc"/><baserel ref="#po"/><baserel ref="#pp"/><baserel ref="#ppi"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#po"/><baserel2 ref="#pp"/>
+      <cmpsrel><baserel ref="#po"/><baserel ref="#pp"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#po"/><baserel2 ref="#ppi"/>
+      <cmpsrel><baserel ref="#dc"/><baserel ref="#po"/><baserel ref="#ppi"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#pp"/><baserel2 ref="#eq"/>
+      <cmpsrel><baserel ref="#pp"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#pp"/><baserel2 ref="#dc"/>
+      <cmpsrel><baserel ref="#dc"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#pp"/><baserel2 ref="#po"/>
+      <cmpsrel><baserel ref="#dc"/><baserel ref="#po"/><baserel ref="#pp"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#pp"/><baserel2 ref="#pp"/>
+      <cmpsrel><baserel ref="#pp"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#pp"/><baserel2 ref="#ppi"/>
+      <cmpsrel><baserel ref="#eq"/><baserel ref="#dc"/><baserel ref="#po"/><baserel ref="#pp"/><baserel ref="#ppi"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#ppi"/><baserel2 ref="#eq"/>
+      <cmpsrel><baserel ref="#ppi"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#ppi"/><baserel2 ref="#dc"/>
+      <cmpsrel><baserel ref="#dc"/><baserel ref="#po"/><baserel ref="#ppi"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#ppi"/><baserel2 ref="#po"/>
+      <cmpsrel><baserel ref="#po"/><baserel ref="#ppi"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#ppi"/><baserel2 ref="#pp"/>
+      <cmpsrel><baserel ref="#eq"/><baserel ref="#po"/><baserel ref="#pp"/><baserel ref="#ppi"/></cmpsrel>
+    </mapsto>
+    <mapsto>
+      <baserel1 ref="#ppi"/><baserel2 ref="#ppi"/>
+      <cmpsrel><baserel ref="#ppi"/></cmpsrel>
+    </mapsto>
+  </composition>
+</specification>
+
+<!-- interpretation>
+  <model ref="http://www.blup.com" id="demomodel">
+    <domain ref="#circles"/>
+  </model>
+</interpretation -->
+
+<!-- computation>
+  <subclass id="interpretation1" name="demo">
+    <rel>
+      <baserel ref="rel1"/>
+    </rel>
+  </subclass>
+  
+  <subclassProperty ref="interpretation1" model="demomodel" value="cmpsClsDecidesConsistency"/>
+</computation -->
+</calculus>

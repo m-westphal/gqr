@@ -1,0 +1,61 @@
+1 # inconsistent
+0 1 ( < )
+1 0 ( = )
+.
+
+2 # test-inconsistent-1
+0 1 (<)
+1 2 (<)
+2 0 (<)
+.
+
+1 # test-inconsistent-2
+0 1 (<)
+1 0 (<)
+.
+
+2 # test-inconsistent-3
+0 1 (<)
+1 2 (<)
+0 2 (=)
+.
+
+2 # test-inconsistent-4
+0 1 (<)
+1 0 (<)
+0 2 (=)
+.
+
+2 # test-inconsistent-5
+0 1 (<)
+1 0 (<)
+0 0 (= <)
+.
+
+
+1 # consistent-test-6
+0 1 (< =)
+1 0 (=)
+.
+
+1 # consistent-test-7
+0 1 (=)
+1 0 (> =)
+.
+
+1 # consistent-test-8
+0 1 (=)
+1 0 (< =)
+.
+
+
+1 # inconsistent-test-9
+0 0 (<)
+.
+
+2 # consistent
+0 1 (<)
+1 0 (>)
+2 2 (< =)
+.
+

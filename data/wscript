@@ -1,0 +1,96 @@
+#! /usr/bin/env python
+# encoding: utf-8
+# Stefan Woelfl, 2008
+# Matthias Westphal, 2009
+
+import os.path
+import os
+import Options
+
+
+data_files = [
+('allen.spec', []),
+('cd.spec', []),
+('opra1.spec', []),
+('opra2.spec', []),
+('opra4.spec', []),
+('point.spec', []),
+('rcc5.spec', []),
+('rcc8.spec', []),
+('rcc23.spec', []),
+('occ.spec', []),
+('point-branching.spec', []),
+('rcc8+point.combination', []),
+('allen+allen.combination', []),
+('allen.comp', ['allen', 'calculus']),
+('allen.conv', ['allen', 'calculus']),
+('allen.weights', ['allen', 'calculus']),
+('contalg', ['allen', 'calculus']),
+('hornalg', ['allen', 'calculus']),
+('pointalg', ['allen', 'calculus']),
+('alleq.csp', ['allen', 'csp']),
+('example-100x150.csp', ['allen', 'csp']),
+('example-10x10.csp', ['allen', 'csp']),
+('example-10x15.csp', ['allen', 'csp']),
+('example-20x20.csp', ['allen', 'csp']),
+('example50.csp', ['allen', 'csp']),
+('example-5x320.csp', ['allen', 'csp']),
+('rcc5.comp', ['rcc5', 'calculus']),
+('rcc5.conv', ['rcc5', 'calculus']),
+('hornalg', ['rcc5', 'calculus']),
+('alleq.csp', ['rcc5', 'csp']),
+('occ.comp', ['occ', 'calculus']),
+('occ.conv', ['occ', 'calculus']),
+('allI.csp', ['occ', 'csp']),
+('rcc8.comp', ['rcc8', 'calculus']),
+('rcc8.conv', ['rcc8', 'calculus']),
+('rcc8.weights', ['rcc8', 'calculus']),
+('closebasealg', ['rcc8', 'calculus']),
+('hornalg', ['rcc8', 'calculus']),
+('alleq.csp', ['rcc8', 'csp']),
+('example-10x10.csp', ['rcc8', 'csp']),
+('example-10x20.csp', ['rcc8', 'csp']),
+('example-10x30.csp', ['rcc8', 'csp']),
+('example-20x20.csp', ['rcc8', 'csp']),
+('example-30x20.csp', ['rcc8', 'csp']),
+('example-200x10.csp', ['rcc8', 'csp']),
+('PC.csp', ['rcc8', 'csp']),
+('rcc23.comp', ['rcc23', 'calculus']),
+('rcc23.conv', ['rcc23', 'calculus']),
+('rcc23.weights', ['rcc23', 'calculus']),
+('opra1.comp', ['opra1', 'calculus']),
+('opra1.conv', ['opra1', 'calculus']),
+('opra1.weights', ['opra1', 'calculus']),
+('opra2.comp', ['opra2', 'calculus']),
+('opra2.conv', ['opra2', 'calculus']),
+('opra2.weights', ['opra2', 'calculus']),
+('opra4.comp', ['opra4', 'calculus']),
+('opra4.conv', ['opra4', 'calculus']),
+('opra4.weights', ['opra4', 'calculus']),
+('alleq.csp', ['opra4', 'csp']),
+('planning.csp', ['opra4', 'csp']),
+('planning2.csp', ['opra4', 'csp']),
+('planning3.csp', ['opra4', 'csp']),
+('planning5.csp', ['opra4', 'csp']),
+('cd.comp', ['cd', 'calculus']),
+('cd.conv', ['cd', 'calculus']),
+('alleq.csp', ['cd', 'csp']),
+('point.comp', ['point', 'calculus']),
+('point.conv', ['point', 'calculus']),
+('allalg', ['point', 'calculus']),
+('alleq.csp', ['point', 'csp']),
+('point-branching.comp', ['point-branching', 'calculus']),
+('point-branching.conv', ['point-branching', 'calculus']),
+('linear-inconsistent.csp', ['point', 'csp'])
+]
+
+def build(bld):
+      for name, path in data_files:
+	    tpath = os.path.join('${PREFIX}',Options.options.data_dir)
+            fname = ''
+	    for n in path:
+              fname = os.path.join(fname, n)
+            tpath = os.path.join(tpath, fname)
+            fname = os.path.join(fname, name)
+
+            bld.install_files(tpath, fname)

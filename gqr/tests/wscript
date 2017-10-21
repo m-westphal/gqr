@@ -1,0 +1,89 @@
+#! /usr/bin/env python
+# coding: utf-8
+
+# Stefan Woelfl, 2008
+# Matthias Westphal, 2009
+
+import os
+
+import cxxtestgen
+
+
+# tests and linker dependencies
+tests = [
+      ( 'TimerTest', ['utils/Timer.cpp'] ),
+      ( 'PriorityQueueTest', [ 'PriorityQueue.cpp' ]),
+      ( 'TupleTest', [ ] ),
+      ( 'StringtoolsTest', [ 'Stringtools.cpp' ]),
+      ( 'RelationTest', [ ] ),
+      ( 'CalculusReaderTest', [ 'Calculus.cpp', 'CalculusReader.cpp', 'Stringtools.cpp' ]),
+      ( 'CalculusTest', [ 'Calculus.cpp', 'CalculusReader.cpp', 'Stringtools.cpp' ] ),
+      ( 'RelationFixedBitsetTest', [ ] ),
+      ( 'CSPTest', [ ] ),
+      ( 'AllenCalculusTest', [ 'Calculus.cpp', 'CalculusReader.cpp', 'Stringtools.cpp' ] ),
+      ( 'FileSplitterTest', [ 'Calculus.cpp', 'CalculusReader.cpp', 'Stringtools.cpp' ] ),
+      ( 'PropagationTest', [ 'Calculus.cpp', 'CalculusReader.cpp', 'Stringtools.cpp', 'PriorityQueue.cpp' ] ),
+      ( 'ConsistencyTest', [ 'Calculus.cpp', 'CalculusReader.cpp', 'Stringtools.cpp', 'PriorityQueue.cpp', 'RestartsFramework.cpp', 'utils/Logger.cpp', 'utils/Timer.cpp' ] ),
+      ( 'CombinedCalculusReaderTest', [ 'CombinedCalculusReader.cpp', 'Calculus.cpp', 'CalculusReader.cpp', 'Stringtools.cpp' ] )
+      ]
+# Old unit tests not adapted to the refactoring
+#      ConsistencyTest
+#      CartesianProductSplitterTest
+
+def genTest_func(task):
+      "Makes a testsuite with cxxtestgen.py"
+
+      cxxtestgen.wrotePreamble = 0
+      cxxtestgen.wroteWorld = 0
+      cxxtestgen.suites = []
+
+      env = task.env
+      infile = task.inputs[0].srcpath(env)
+      outfile = task.outputs[0].srcpath(env)
+
+      cxxtestgen.scanInputFile(infile)
+      cxxtestgen.runner = 'ErrorPrinter'
+      cxxtestgen.haveStandardLibrary = 1
+      cxxtestgen.outputFileName = outfile
+      cxxtestgen.writeOutput()
+
+def configure(conf):
+      # we need cp
+      conf.check_tool('misc')
+
+      conf.env['CXXFLAGS_TESTS'] = ['-g', '-O3', '-D_GLIBCXX_DEBUG']
+
+def build(bld):
+      global tests
+      obj_includes = './ ./cxxtest ../'
+
+#	TODO: update libgqr tests
+#      if 'ENABLE_LIBGQR' in bld.get_env()['defines']:
+#	    tests += [ ('gobjectTest', []), ('libgqrTest', []) ]  # gobject tests the C interface, libgqr the internal cpp wrapper (gqr_wrap)
+
+      for (t, _) in tests:
+            obj = bld.new_task_gen('copy')
+            obj.source = '%s.h' % t
+            obj.target = 'run%s.cpp' % t
+            obj.fun = genTest_func
+            bld.add_group() # must not run genTest_func in parallel (has global vars)
+
+      for (t, d) in tests:
+            obj = bld.new_task_gen('cxx', 'program')
+            obj.source = [ 'run%s.cpp' % t ]
+            for s in d:
+               obj.source += [ '../'+s ]
+#      The following builds timer once. It does however not work with waf 1.5.X unit test framework, since the unit test
+#      framework tries to get an executable binary from every(?) build task and hence just crashes.
+#      timer_obj = bld.new_task_gen(features = 'cxx', source = '../Timer.cc', uselib = 'TESTS', includes = '../', target = 'timer_for_tests')
+#            obj.add_objects = 'timer_for_tests' # link timer as well (although it might not be necessary for each test)
+            obj.name = "%s" % t
+	    obj.includes = obj_includes
+	    obj.uselib = 'TESTS'
+	    if t == 'gobjectTest':
+	        obj.includes += ' ../gobject/'
+		obj.uselib += ' GOBJECT'
+		obj.source += " ../gobject/gqrcalculus.cpp ../gobject/gqrcsp.cpp ../gobject/gqrsolver.cpp"
+            obj.target   = 'run%s' % t
+            obj.unit_test = 1
+            obj.install_path = None

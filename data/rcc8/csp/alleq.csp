@@ -1,0 +1,5 @@
+2 # 3 nodes, all identical
+ 0  1 ( EQ )
+ 0  2 ( EQ )
+ 1  2 ( EQ )
+.
